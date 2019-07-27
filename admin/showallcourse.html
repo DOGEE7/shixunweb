@@ -72,10 +72,11 @@
     </div>
 </section>
 <script>
+    var course= new Array();
+    var  edited_cid;
     $(function () {
+
         console.log("print alot");
-
-
         // console.log("print alot");
         var data = {
             "uniqueToken": $.cookie("token")
@@ -94,9 +95,9 @@
             // dataType: "json",
             success: function (d) {
                 if (d.status== 200) {
-                    var course = new Array();
                     d.data.forEach(function (item,index) {
-                        let a = {cid:item.cid,cname: item.cname, tid: item.tid,ctime: item.ctime,info:item.info};
+                        let a = {cname: item.cname, tid: item.tid,ctime: item.ctime,info:item.info};
+                        course[item.cid]=a;
                         $("tbody").append($("<tr>\n" +
                             "                            <td>" + item.cid + "</td>\n" +
                             "                            <td>" + item.cname + "</td>\n" +
@@ -124,9 +125,17 @@
         });
         console.log($(".btn-danger"));
         // $("button[class=btn-success]")
+        $(".btn-success").click(function (e) {
+            edited_cid=e.currentTarget.id;
+            $.get("admin/updatecourse.html",function (e) {
+                $(".content-wrapper").html(e);
+            });
+        })
+
+
+
         $(".btn-danger").click(function (e) {
             console.log(e);
-
             $(".alert").hide();
             var data = {
                 "uniqueToken": $.cookie("token"),
@@ -144,7 +153,10 @@
                 contentType: "application/json; charset=utf-8",
                 // dataType: "json",
                 success: function (d) {
-                    if (d.status ==200) {
+                    if (d.msg == "OK") {
+                        $.get("admin/showallcourse.html",function (e) {
+                            $(".content-wrapper").html(e)
+                        });
                         $(".alert-success").show();
                         $(".alert-success").text("删除成功");
                     } else {
@@ -171,46 +183,10 @@
 
 </script>
 <script>
-    // console.log("print alot");
-    // $(".btn-danger").click(function (e) {
-    //     console.log(e);
-    //
-    //     $(".alert").hide();
-    //     var data = {
-    //         "uniqueToken": $.cookie("token"),
-    //         "cid": e.currentTarget.id
-    //     };
-    //     $.ajax({
-    //         // method: "POST",
-    //         type: "POST",
-    //         url: 'http://120.78.78.174:6233/admin/delCourse',
-    //         // async: false, // 使用同步方式
-    //         // 1 需要使用JSON.stringify 否则格式为 a=2&b=3&now=14...
-    //         // 2 需要强制类型转换，否则格式为 {"a":"2","b":"3"}
-    //         // headers:{"Authorization":""},
-    //         data: JSON.stringify(data),
-    //         contentType: "application/json; charset=utf-8",
-    //         // dataType: "json",
-    //         success: function (d) {
-    //             if (d.msg == "OK") {
-    //                 $(".alert-success").show();
-    //                 $(".alert-success").text("删除成功");
-    //             } else {
-    //                 $(".alert-error").text(d.msg);
-    //                 $(".alert-error").show();
-    //             }
-    //         },// 注意不要在此行增加逗号,
-    //         error: function (e) {
-    //             $(".alert-error").text("服务器连接失败");
-    //             $(".alert-error").show();
-    //         }
-    //     })
-    // });
     console.log("print alot");
     $(".btn-success").click(function (e) {
-
-        var edited_userid = e.currentTarget.id;
-        $.get("updatecourse.html",function (e) {
+        var edited_cid = e.currentTarget.id;
+        $.get("admin/updatecourse.html",function (e) {
             // console.log(e);
             $(".content-wrapper").html(e)
         });
